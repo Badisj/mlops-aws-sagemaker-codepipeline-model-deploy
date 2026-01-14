@@ -46,7 +46,7 @@ Resources:
   Model:
     Type: AWS::SageMaker::Model
     Properties:
-      ModelName: !Sub Model-${SageMakerProjectName}-${StageName}
+      ModelName: !Sub "Model-${StageName}-${SageMakerProjectName}-${AWS::StackName}-${AWS::Timestamp}"
       Containers:
          - ModelPackageName: !Ref ModelPackageName
       ExecutionRoleArn: !Ref ModelExecutionRoleArn
