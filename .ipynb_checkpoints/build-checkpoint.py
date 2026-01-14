@@ -5,7 +5,6 @@ import os
 
 import boto3
 from botocore.exceptions import ClientError
-from datetime import datetime
 
 logger = logging.getLogger(__name__)
 sm_client = boto3.client("sagemaker")
@@ -69,13 +68,11 @@ def extend_config(args, model_package_arn, stage_config):
         raise Exception("Configuration file must include SageName parameter")
     if not "Tags" in stage_config:
         stage_config["Tags"] = {}
-    
     # Create new params and tags
     new_params = {
         "SageMakerProjectName": args.sagemaker_project_name,
         "ModelPackageName": model_package_arn,
         "ModelExecutionRoleArn": args.model_execution_role,
-        "DeploymentTimestamp": datetime.utcnow().strftime("%Y%m%d%H%M%S"),
         "DataCaptureUploadPath": "s3://" + args.s3_bucket + '/datacapture-' + stage_config["Parameters"]["StageName"],
     }
     new_tags = {
