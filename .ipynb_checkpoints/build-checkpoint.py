@@ -120,10 +120,10 @@ def extend_config(args, model_package_arn, stage_config):
     }
     # Add variant weights to parameters
     if args.deployment_strategy in ["canary", "ab"]:
-        new_params["CandidateModelWeight"] = args.candidate_weight
-        new_params["PreviousModelWeight"] = 1.0 - args.candidate_weight
+        new_params["CandidateModelWeight"] = str(args.candidate_weight)
+        new_params["PreviousModelWeight"] = str(1.0 - args.candidate_weight)
     else:
-        new_params["CandidateModelWeight"] = args.candidate_weight
+        new_params["CandidateModelWeight"] = str(args.candidate_weight)
 
     # Create new tags
     new_tags = {
