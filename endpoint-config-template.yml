@@ -32,12 +32,12 @@ Parameters:
       - shadow
   CandidateModelWeight:
     Type: Number
-    Default: 1
+    Default: 1.0
     MinValue: 0
     MaxValue: 1
   PreviousModelWeight:
     Type: Number
-    Default: 1
+    Default: 1.0
     MinValue: 0
     MaxValue: 1
   PreviousModelName:
