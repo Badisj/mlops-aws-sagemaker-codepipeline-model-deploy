@@ -69,6 +69,7 @@ Parameters:
     AllowedValues: [true, false]
 
 Conditions:
+  IsFirst: !Equals [!Ref DeploymentStrategy, first]
   IsBlueGreen: !Equals [!Ref DeploymentStrategy, bluegreen]
   IsCanary: !Equals [!Ref DeploymentStrategy, canary]
   IsAB: !Equals [!Ref DeploymentStrategy, ab]
@@ -100,14 +101,14 @@ Resources:
             ModelName: !GetAtt NewModel.ModelName
             InitialInstanceCount: !Ref EndpointInstanceCount
             InstanceType: !Ref EndpointInstanceType
-            InitialVariantWeight: 1.0
+            InitialVariantWeight: !Ref CandidateModelWeight
           - !If
             - IsBlueGreen
             - VariantName: Green
               ModelName: !GetAtt NewModel.ModelName
               InitialInstanceCount: !Ref EndpointInstanceCount
               InstanceType: !Ref EndpointInstanceType
-              InitialVariantWeight: 1.0
+              InitialVariantWeight: !Ref CandidateModelWeight
             - !If
               - IsCanary
               - VariantName: CanaryOld
