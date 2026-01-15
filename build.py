@@ -73,9 +73,19 @@ def get_previous_model_name(project_name, stage_config):
 
         return endpoint_config["ProductionVariants"][0]["ModelName"]
 
-    except sm_client.exceptions.ResourceNotFound:
-        # First deployment → no previous model
-        return ""
+    except ClientError as e:
+        error_code = e.response["Error"]["Code"]
+
+        # Endpoint does not exist (first deployment)
+        if error_code in ["ValidationException", "ResourceNotFound"]:
+            logger.info(
+                f"No existing endpoint found for {endpoint_name}. "
+                "This is expected for first deployment."
+            )
+            return ""
+
+        # Any other error is real and should fail the build
+        raise
 
 
 def extend_config(args, model_package_arn, stage_config):
