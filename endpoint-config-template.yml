@@ -100,34 +100,41 @@ Resources:
       ProductionVariants:
         # -------- FIRST / BLUE-GREEN --------
         - !If
-          - IsFirst
-          - VariantName: AllTraffic
-            ModelName: !GetAtt NewModel.ModelName
+          - IsShadow
+          - VariantName: Live
+            ModelName: !Ref PreviousModelName
             InitialInstanceCount: !Ref EndpointInstanceCount
             InstanceType: !Ref EndpointInstanceType
             InitialVariantWeight: !Ref CandidateModelWeight
           - !If
-            - IsBlueGreen
-            - VariantName: Green
+            - IsFirst
+            - VariantName: AllTraffic
               ModelName: !GetAtt NewModel.ModelName
               InitialInstanceCount: !Ref EndpointInstanceCount
               InstanceType: !Ref EndpointInstanceType
               InitialVariantWeight: !Ref CandidateModelWeight
             - !If
-              - IsCanary
-              - VariantName: CanaryOld
-                ModelName: !Ref PreviousModelName
+              - IsBlueGreen
+              - VariantName: Green
+                ModelName: !GetAtt NewModel.ModelName
                 InitialInstanceCount: !Ref EndpointInstanceCount
                 InstanceType: !Ref EndpointInstanceType
-                InitialVariantWeight: !Ref PreviousModelWeight
+                InitialVariantWeight: !Ref CandidateModelWeight
               - !If
-                - IsAB
-                - VariantName: VariantA
+                - IsCanary
+                - VariantName: CanaryOld
                   ModelName: !Ref PreviousModelName
                   InitialInstanceCount: !Ref EndpointInstanceCount
                   InstanceType: !Ref EndpointInstanceType
                   InitialVariantWeight: !Ref PreviousModelWeight
-                - !Ref AWS::NoValue
+                - !If
+                  - IsAB
+                  - VariantName: VariantA
+                    ModelName: !Ref PreviousModelName
+                    InitialInstanceCount: !Ref EndpointInstanceCount
+                    InstanceType: !Ref EndpointInstanceType
+                    InitialVariantWeight: !Ref PreviousModelWeight
+                  - !Ref AWS::NoValue
 
         # -------- CANARY / AB NEW MODEL --------
         - !If
