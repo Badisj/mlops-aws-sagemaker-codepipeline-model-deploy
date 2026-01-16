@@ -85,6 +85,8 @@ Resources:
   ### New model
   NewModel:
     Type: AWS::SageMaker::Model
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       ModelName: !Ref NewModelName
       ExecutionRoleArn: !Ref ModelExecutionRoleArn
@@ -141,7 +143,7 @@ Resources:
           - IsCanary
           - VariantName: CanaryNew
             ModelName: !GetAtt NewModel.ModelName
-            InitialInstanceCount: 1
+            InitialInstanceCount: !Ref EndpointInstanceCount
             InstanceType: !Ref EndpointInstanceType
             InitialVariantWeight: !Ref CandidateModelWeight
           - !If
@@ -159,7 +161,7 @@ Resources:
           - 
             - VariantName: Shadow
               ModelName: !GetAtt NewModel.ModelName
-              InitialInstanceCount: 1
+              InitialInstanceCount: !Ref EndpointInstanceCount
               InstanceType: !Ref EndpointInstanceType
           - !Ref AWS::NoValue
 
