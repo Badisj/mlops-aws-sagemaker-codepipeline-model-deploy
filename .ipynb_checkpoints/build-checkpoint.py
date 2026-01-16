@@ -60,9 +60,7 @@ def get_approved_package(model_package_group_name):
         raise Exception(error_message)
 
 
-def get_previous_model_name(project_name, stage_config):
-    endpoint_name = f"Endpoint-{project_name}-{stage_config['Parameters']['StageName']}"
-
+def get_previous_model_name(project_name, endpoint_name):
     try:
         endpoint = sm_client.describe_endpoint(EndpointName=endpoint_name)
         endpoint_config_name = endpoint["EndpointConfigName"]
@@ -98,8 +96,16 @@ def extend_config(args, model_package_arn, stage_config):
     if "Tags" not in stage_config:
         stage_config["Tags"] = {}
 
+    # Set model, endpoint configuration and endpoint names
+    stage_name = stage_config['Parameters']['StageName']
+    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+
+    new_model_name = f"Model-{args.project_name}-{stage_name}-{timestamp}"
+    endpoint_config_name = f"EndpointConfig-{args.project_name}-{stage_name}-{timestamp}"
+    endpoint_name = f"Endpoint-{args.project_name}-{stage_name}"
+
     # Get previous deployed model if exists
-    previous_prod_model_name = get_previous_model_name(args.sagemaker_project_name, stage_config)
+    previous_prod_model_name = get_previous_model_name(args.sagemaker_project_name, endpoint_name)
     if args.deployment_strategy not in ["bluegreen", "first"] and not previous_prod_model_name:
         raise Exception(
             f"{args.deployment_strategy} requires an existing endpoint"
@@ -111,7 +117,9 @@ def extend_config(args, model_package_arn, stage_config):
         "SageMakerProjectName": args.sagemaker_project_name,
         "ModelPackageName": model_package_arn,
         "ModelExecutionRoleArn": args.model_execution_role,
-        "DeploymentTimestamp": datetime.utcnow().strftime("%Y%m%d%H%M%S"),
+        "NewModelName": new_model_name,
+        "EndpointConfigName": endpoint_config_name,
+        "EndpointName": endpoint_name,
         "DataCaptureUploadPath": "s3://" + args.s3_bucket + '/datacapture-' + stage_config["Parameters"]["StageName"],
 
         # Deployment strategy parameter set

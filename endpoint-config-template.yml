@@ -16,11 +16,15 @@ Parameters:
   ModelPackageName:
     Type: String
     Description: The trained Model Package Name
-  StageName:
+  NewModelName:
     Type: String
-    Description:
-      The name for a project pipeline stage, such as Staging or Prod, for
-      which resources are provisioned and deployed.
+    Description: The new model name.
+  EndpointConfigNAme:
+    Type: String
+    Description: The endpoint configuration name.
+  EndpointName:
+    Type: String
+    Description: The endpoint name.
   DeploymentStrategy:
     Type: String
     Description: The deployment strategy to be adopted.
@@ -44,9 +48,6 @@ Parameters:
     Type: String
     Default: ""
     Description: Existing model name (required for canary / ab / shadow)
-  DeploymentTimestamp:
-    Type: String
-    Description: YYYYMMDDHHMMSS
   EndpointInstanceCount:
     Type: Number
     Description: Number of instances to launch for the endpoint.
@@ -82,7 +83,7 @@ Resources:
   NewModel:
     Type: AWS::SageMaker::Model
     Properties:
-      ModelName: !Sub "Model-${SageMakerProjectName}-${StageName}-${DeploymentTimestamp}"
+      ModelName: !ref NewModelName
       ExecutionRoleArn: !Ref ModelExecutionRoleArn
       Containers:
          - ModelPackageName: !Ref ModelPackageName
@@ -91,7 +92,7 @@ Resources:
   EndpointConfig:
     Type: AWS::SageMaker::EndpointConfig
     Properties:
-      EndpointConfigName: !Sub "EndpointConfig-${SageMakerProjectName}-${StageName}-${DeploymentTimestamp}"
+      EndpointConfigName: !Ref EndpointConfigName
 
       ProductionVariants:
         # -------- FIRST / BLUE-GREEN --------
@@ -166,5 +167,5 @@ Resources:
   Endpoint:
     Type: AWS::SageMaker::Endpoint
     Properties:
-      EndpointName: !Sub "Endpoint-${SageMakerProjectName}-${StageName}"
+      EndpointName: !Ref EndpointName
       EndpointConfigName: !GetAtt EndpointConfig.EndpointConfigName
