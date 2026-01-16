@@ -86,7 +86,7 @@ Resources:
   NewModel:
     Type: AWS::SageMaker::Model
     Properties:
-      ModelName: !ref NewModelName
+      ModelName: !Ref NewModelName
       ExecutionRoleArn: !Ref ModelExecutionRoleArn
       Containers:
          - ModelPackageName: !Ref ModelPackageName
