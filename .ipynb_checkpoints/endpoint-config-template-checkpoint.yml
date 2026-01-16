@@ -13,6 +13,9 @@ Parameters:
   ModelExecutionRoleArn:
     Type: String
     Description: Execution role used for deploying the model.
+  StageName:
+    Type: String
+    Description: The deployment stage.
   ModelPackageName:
     Type: String
     Description: The trained Model Package Name
