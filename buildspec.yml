@@ -18,7 +18,7 @@ phases:
           --sagemaker-project-id "$SAGEMAKER_PROJECT_ID" \
           --sagemaker-project-name "$SAGEMAKER_PROJECT_NAME" \
           --s3-bucket "$ARTIFACT_BUCKET" \
-          --deployment-strategy "first" \
+          --deployment-strategy "shadow" \
           --candidate-weight 1.0 \
           --export-staging-config $EXPORT_TEMPLATE_STAGING_CONFIG \
           --export-prod-config $EXPORT_TEMPLATE_PROD_CONFIG
