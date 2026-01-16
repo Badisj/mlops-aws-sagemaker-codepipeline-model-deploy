@@ -19,7 +19,7 @@ Parameters:
   NewModelName:
     Type: String
     Description: The new model name.
-  EndpointConfigNAme:
+  EndpointConfigName:
     Type: String
     Description: The endpoint configuration name.
   EndpointName:
