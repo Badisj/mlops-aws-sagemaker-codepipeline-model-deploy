@@ -143,13 +143,13 @@ Resources:
             - !Ref AWS::NoValue
 
       # -------- SHADOW --------
-      ShadowProductionVariants:
-        - !If
+      ShadowProductionVariants: !If
           - IsShadow
-          - VariantName: Shadow
-            ModelName: !GetAtt NewModel.ModelName
-            InitialInstanceCount: 1
-            InstanceType: !Ref EndpointInstanceType
+          - 
+            - VariantName: Shadow
+              ModelName: !GetAtt NewModel.ModelName
+              InitialInstanceCount: 1
+              InstanceType: !Ref EndpointInstanceType
           - !Ref AWS::NoValue
 
       DataCaptureConfig:
